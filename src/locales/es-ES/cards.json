@@ -1,0 +1,13 @@
+{
+  "title": "Mis Tarjetas",
+  "subtitle": "Gestiona límites, facturas y vencimientos",
+  "addCard": "Añadir Tarjeta",
+  "limitUsed": "Límite Utilizado",
+  "availableLimit": "Límite Disponible",
+  "totalLimit": "Límite Total",
+  "closingDate": "Día de Cierre",
+  "dueDate": "Día de Vencimiento",
+  "payInvoice": "Pagar Factura",
+  "newPurchase": "Añadir Compra",
+  "noCards": "No hay tarjetas registradas"
+}

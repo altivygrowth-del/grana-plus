@@ -1,0 +1,9 @@
+{
+  "title": "Relatórios Financeiros",
+  "subtitle": "Análise aprofundada de receitas, despesas e hábitos",
+  "period": "Período",
+  "exportPdf": "Exportar PDF",
+  "exportCsv": "Exportar CSV",
+  "categoryAnalysis": "Análise por Categoria",
+  "savingsRate": "Taxa de Poupança"
+}

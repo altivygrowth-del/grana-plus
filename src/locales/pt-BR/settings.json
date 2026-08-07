@@ -1,0 +1,17 @@
+{
+  "title": "Configurações",
+  "subtitle": "Gerencie seu perfil, preferências e segurança",
+  "preferences": "Preferências de Exibição",
+  "theme": "Tema de Exibição",
+  "light": "Claro",
+  "dark": "Escuro",
+  "system": "Sistema",
+  "language": "Idioma da Interface",
+  "currency": "Moeda Principal",
+  "dateFormat": "Formato de Data",
+  "notifications": "Notificações",
+  "security": "Segurança e Acesso",
+  "changePassword": "Alterar Senha",
+  "profile": "Dados do Perfil",
+  "saveSuccess": "Configurações salvas com sucesso!"
+}

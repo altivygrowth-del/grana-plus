@@ -1,0 +1,17 @@
+{
+  "title": "Settings",
+  "subtitle": "Manage your profile, preferences, and security",
+  "preferences": "Display Preferences",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "system": "System",
+  "language": "Interface Language",
+  "currency": "Primary Currency",
+  "dateFormat": "Date Format",
+  "notifications": "Notifications",
+  "security": "Security & Access",
+  "changePassword": "Change Password",
+  "profile": "Profile Info",
+  "saveSuccess": "Settings saved successfully!"
+}

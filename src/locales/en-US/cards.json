@@ -1,0 +1,13 @@
+{
+  "title": "My Cards",
+  "subtitle": "Manage limits, statements, and due dates",
+  "addCard": "Add Card",
+  "limitUsed": "Used Limit",
+  "availableLimit": "Available Limit",
+  "totalLimit": "Total Limit",
+  "closingDate": "Closing Day",
+  "dueDate": "Due Day",
+  "payInvoice": "Pay Invoice",
+  "newPurchase": "Add Purchase",
+  "noCards": "No registered cards"
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Movimientos",
+  "subtitle": "Historial detallado de ingresos y gastos",
+  "newTransaction": "Nueva Transacción",
+  "income": "Ingreso",
+  "expense": "Gasto",
+  "transfer": "Transferencia",
+  "allTypes": "Todos los Tipos",
+  "allCategories": "Todas las Categorías",
+  "description": "Descripción",
+  "account": "Cuenta",
+  "category": "Categoría",
+  "date": "Fecha",
+  "value": "Monto",
+  "searchPlaceholder": "Buscar movimientos...",
+  "noTransactions": "No se encontraron movimientos con estos filtros"
+}

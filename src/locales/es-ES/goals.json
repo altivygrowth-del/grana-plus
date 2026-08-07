@@ -1,0 +1,12 @@
+{
+  "title": "Metas y Objetivos",
+  "subtitle": "Planifica tus logros financieros a corto y largo plazo",
+  "addGoal": "Crear Nueva Meta",
+  "currentAmount": "Acumulado",
+  "targetAmount": "Meta Total",
+  "deadline": "Plazo Estimado",
+  "contribute": "Añadir Fondos",
+  "remaining": "Faltan",
+  "completed": "¡Meta Alcanzada!",
+  "noGoals": "No hay metas registradas"
+}
