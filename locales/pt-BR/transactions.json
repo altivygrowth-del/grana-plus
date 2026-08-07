@@ -1,0 +1,17 @@
+{
+  "title": "Movimentações",
+  "subtitle": "Histórico detalhado de receitas e despesas",
+  "newTransaction": "Nova Transação",
+  "income": "Receita",
+  "expense": "Despesa",
+  "transfer": "Transferência",
+  "allTypes": "Todos os Tipos",
+  "allCategories": "Todas as Categorias",
+  "description": "Descrição",
+  "account": "Conta",
+  "category": "Categoria",
+  "date": "Data",
+  "value": "Valor",
+  "searchPlaceholder": "Buscar lançamentos...",
+  "noTransactions": "Nenhuma movimentação encontrada com esses filtros"
+}

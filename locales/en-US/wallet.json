@@ -1,0 +1,16 @@
+{
+  "title": "My Wallet",
+  "subtitle": "Manage your bank accounts and investments",
+  "accounts": "Connected Accounts",
+  "addAccount": "Add Account",
+  "totalAssets": "Total Assets",
+  "checking": "Checking Account",
+  "savings": "Savings",
+  "investment": "Investments",
+  "cash": "Cash",
+  "balance": "Current Balance",
+  "bank": "Bank Institution",
+  "accountName": "Account Name",
+  "initialBalance": "Initial Balance",
+  "noAccounts": "No connected accounts"
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Minha Carteira",
+  "subtitle": "Gerencie suas contas bancárias e investimentos",
+  "accounts": "Contas Conectadas",
+  "addAccount": "Adicionar Conta",
+  "totalAssets": "Patrimônio Total",
+  "checking": "Conta Corrente",
+  "savings": "Poupança",
+  "investment": "Investimentos",
+  "cash": "Dinheiro Físico",
+  "balance": "Saldo Atual",
+  "bank": "Instituição Bancária",
+  "accountName": "Nome da Conta",
+  "initialBalance": "Saldo Inicial",
+  "noAccounts": "Nenhuma conta cadastrada"
+}

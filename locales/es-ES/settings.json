@@ -1,0 +1,17 @@
+{
+  "title": "Ajustes",
+  "subtitle": "Gestiona tu perfil, preferencias y seguridad",
+  "preferences": "Preferencias de Pantalla",
+  "theme": "Tema de Pantalla",
+  "light": "Claro",
+  "dark": "Oscuro",
+  "system": "Sistema",
+  "language": "Idioma de la Interfaz",
+  "currency": "Moneda Principal",
+  "dateFormat": "Formato de Fecha",
+  "notifications": "Notificaciones",
+  "security": "Seguridad y Acceso",
+  "changePassword": "Cambiar Contraseña",
+  "profile": "Datos del Perfil",
+  "saveSuccess": "¡Ajustes guardados con éxito!"
+}

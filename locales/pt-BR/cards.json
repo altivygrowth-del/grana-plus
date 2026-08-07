@@ -1,0 +1,13 @@
+{
+  "title": "Meus Cartões",
+  "subtitle": "Gerencie limites, faturas e vencimentos",
+  "addCard": "Adicionar Cartão",
+  "limitUsed": "Limite Utilizado",
+  "availableLimit": "Limite Disponível",
+  "totalLimit": "Limite Total",
+  "closingDate": "Dia Fechamento",
+  "dueDate": "Dia Vencimento",
+  "payInvoice": "Pagar Fatura",
+  "newPurchase": "Lançar Compra",
+  "noCards": "Nenhum cartão cadastrado"
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Financial Reports",
+  "subtitle": "In-depth analysis of income, expenses, and habits",
+  "period": "Period",
+  "exportPdf": "Export PDF",
+  "exportCsv": "Export CSV",
+  "categoryAnalysis": "Category Analysis",
+  "savingsRate": "Savings Rate"
+}

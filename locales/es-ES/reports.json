@@ -1,0 +1,9 @@
+{
+  "title": "Informes Financieros",
+  "subtitle": "Análisis profundo de ingresos, gastos y hábitos",
+  "period": "Período",
+  "exportPdf": "Exportar PDF",
+  "exportCsv": "Exportar CSV",
+  "categoryAnalysis": "Análisis por Categoría",
+  "savingsRate": "Tasa de Ahorro"
+}

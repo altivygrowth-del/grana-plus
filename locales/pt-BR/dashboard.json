@@ -1,0 +1,17 @@
+{
+  "title": "Visão Geral",
+  "subtitle": "Acompanhe seu fluxo financeiro em tempo real",
+  "totalBalance": "Saldo Total",
+  "monthlyIncome": "Receitas do Mês",
+  "monthlyExpense": "Despesas do Mês",
+  "freeMoney": "Dinheiro Livre",
+  "upcomingBills": "Próximas Contas",
+  "recentTransactions": "Movimentações Recentes",
+  "cashFlow": "Fluxo de Caixa",
+  "categoryDistribution": "Distribuição por Categoria",
+  "aiInsight": "Insight do Assistente IA",
+  "available": "Disponível",
+  "viewAll": "Ver todas",
+  "noTransactions": "Nenhuma movimentação registrada",
+  "noBills": "Nenhuma conta a vencer em breve"
+}

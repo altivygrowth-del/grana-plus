@@ -1,0 +1,17 @@
+{
+  "title": "Transactions",
+  "subtitle": "Detailed history of income and expenses",
+  "newTransaction": "New Transaction",
+  "income": "Income",
+  "expense": "Expense",
+  "transfer": "Transfer",
+  "allTypes": "All Types",
+  "allCategories": "All Categories",
+  "description": "Description",
+  "account": "Account",
+  "category": "Category",
+  "date": "Date",
+  "value": "Amount",
+  "searchPlaceholder": "Search transactions...",
+  "noTransactions": "No transactions found matching filters"
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Overview",
+  "subtitle": "Track your financial flow in real-time",
+  "totalBalance": "Total Balance",
+  "monthlyIncome": "Monthly Income",
+  "monthlyExpense": "Monthly Expenses",
+  "freeMoney": "Free Money",
+  "upcomingBills": "Upcoming Bills",
+  "recentTransactions": "Recent Transactions",
+  "cashFlow": "Cash Flow",
+  "categoryDistribution": "Category Distribution",
+  "aiInsight": "AI Assistant Insight",
+  "available": "Available",
+  "viewAll": "View all",
+  "noTransactions": "No transactions recorded",
+  "noBills": "No upcoming bills due soon"
+}

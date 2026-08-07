@@ -1,0 +1,16 @@
+{
+  "title": "Mi Billetera",
+  "subtitle": "Gestiona tus cuentas bancarias e inversiones",
+  "accounts": "Cuentas Conectadas",
+  "addAccount": "Añadir Cuenta",
+  "totalAssets": "Patrimonio Total",
+  "checking": "Cuenta Corriente",
+  "savings": "Ahorros",
+  "investment": "Inversiones",
+  "cash": "Efectivo",
+  "balance": "Saldo Actual",
+  "bank": "Institución Bancaria",
+  "accountName": "Nombre de la Cuenta",
+  "initialBalance": "Saldo Inicial",
+  "noAccounts": "No hay cuentas registradas"
+}
