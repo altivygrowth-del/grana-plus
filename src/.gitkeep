@@ -1,0 +1,483 @@
+import React, { useEffect, useState } from 'react';
+import { FinancialProvider } from './context/FinancialContext';
+import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
+import { DashboardView } from './components/DashboardView';
+import { CarteiraView } from './components/CarteiraView';
+import { MovimentacoesView } from './components/MovimentacoesView';
+import { MetasView } from './components/MetasView';
+import { PlanejamentoView } from './components/PlanejamentoView';
+import { IaFinanceiraView } from './components/IaFinanceiraView';
+import { CartoesView } from './components/CartoesView';
+import { ConfiguracoesView } from './components/ConfiguracoesView';
+import { RelatoriosView } from './components/RelatoriosView';
+import { PatrimonioView } from './components/PatrimonioView';
+import { AddTransactionModal } from './components/AddTransactionModal';
+import { OnboardingView } from './components/OnboardingView';
+import { AuthLayout } from './components/auth/AuthLayout';
+import { UpdatePasswordModal } from './components/auth/UpdatePasswordModal';
+import { useUserStore } from './store/userStore';
+
+export default function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
+
+  const {
+    user,
+    isAuthenticated,
+    isLoadingAuth,
+    initAuth,
+    setAuthSession
+  } = useUserStore();
+
+  useEffect(() => {
+    initAuth();
+
+    // Check if coming back from password reset link
+    if (window.location.hash.includes('type=recovery') || window.location.search.includes('type=recovery')) {
+      setIsResetPasswordOpen(true);
+    }
+  }, [initAuth]);
+
+  // Loading Session State
+  if (isLoadingAuth) {
+    return (
+      <div className="min-h-screen bg-[#165037] flex flex-col items-center justify-center text-white p-4 selection:bg-[#4CAF6A]">
+        <div className="flex items-center gap-1.5 mb-6 animate-pulse">
+          <span className="text-3xl sm:text-4xl font-black tracking-tight font-serif italic text-white">Grana</span>
+          <span className="text-3xl sm:text-4xl font-black text-[#4CAF6A]">+</span>
+        </div>
+        <div className="w-8 h-8 border-3 border-emerald-500/20 border-t-[#4CAF6A] rounded-full animate-spin" />
+        <p className="text-xs text-emerald-200/80 font-medium mt-4">Carregando autenticação...</p>
+      </div>
+    );
+  }
+
+  // 1. Unauthenticated Route Protection -> Show Login / Register / Forgot Password
+  if (!isAuthenticated) {
+    let initialScreen: 'login' | 'register' | 'forgot-password' = 'login';
+    const path = window.location.pathname.toLowerCase();
+
+    if (path.includes('/register') || path.includes('register')) {
+      initialScreen = 'register';
+    } else if (path.includes('/forgot') || path.includes('forgot')) {
+      initialScreen = 'forgot-password';
+    }
+
+    return (
+      <>
+        <AuthLayout
+          initialScreen={initialScreen}
+          onAuthSuccess={(authUser, profile) => {
+            // Updated session handled by Supabase subscription and setAuthSession
+          }}
+        />
+        <UpdatePasswordModal
+          isOpen={isResetPasswordOpen}
+          onClose={() => setIsResetPasswordOpen(false)}
+        />
+      </>
+    );
+  }
+
+  // 2. Authenticated but Onboarding Not Completed -> Show Onboarding
+  if (!user.isOnboarded) {
+    return (
+      <FinancialProvider>
+        <OnboardingView onComplete={() => {
+          // Onboarding completes and sets isOnboarded = true in userStore
+        }} />
+        <UpdatePasswordModal
+          isOpen={isResetPasswordOpen}
+          onClose={() => setIsResetPasswordOpen(false)}
+        />
+      </FinancialProvider>
+    );
+  }
+
+  // 3. Authenticated & Onboarded -> Show Main Financial App
+  return (
+    <FinancialProvider>
+      <div className="min-h-screen bg-[#F6F8FA] dark:bg-[#0B1320] text-slate-800 dark:text-slate-100 font-sans selection:bg-[#4CAF6A] selection:text-white antialiased transition-colors duration-300">
+        <div className="flex">
+          {/* Sidebar */}
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+            {/* Header */}
+            <Header toggleMobileSidebar={() => setIsSidebarOpen(prev => !prev)} />
+
+            {/* Page View Container */}
+            <main className="flex-1 px-4 lg:px-8 py-6 max-w-7xl w-full mx-auto">
+              {activeTab === 'dashboard' && <DashboardView />}
+              {activeTab === 'carteira' && <CarteiraView />}
+              {(activeTab === 'movimentacoes' || activeTab === 'transactions') && <MovimentacoesView />}
+              {activeTab === 'metas' && <MetasView />}
+              {(activeTab === 'planejamento' || activeTab === 'planning') && <PlanejamentoView />}
+              {(activeTab === 'ia-financeira' || activeTab === 'ia' || activeTab === 'insights') && <IaFinanceiraView />}
+              {(activeTab === 'cartoes' || activeTab === 'cards') && <CartoesView />}
+              {(activeTab === 'configuracoes' || activeTab === 'settings' || activeTab === 'config') && <ConfiguracoesView />}
+              {(activeTab === 'relatorios' || activeTab === 'reports') && <RelatoriosView />}
+              {(activeTab === 'patrimonio' || activeTab === 'wealth' || activeTab === 'assets') && <PatrimonioView />}
+              {activeTab !== 'dashboard' && activeTab !== 'carteira' && activeTab !== 'transactions' && activeTab !== 'movimentacoes' && activeTab !== 'metas' && activeTab !== 'planejamento' && activeTab !== 'planning' && activeTab !== 'ia-financeira' && activeTab !== 'ia' && activeTab !== 'insights' && activeTab !== 'cartoes' && activeTab !== 'cards' && activeTab !== 'configuracoes' && activeTab !== 'settings' && activeTab !== 'config' && activeTab !== 'relatorios' && activeTab !== 'reports' && activeTab !== 'patrimonio' && activeTab !== 'wealth' && activeTab !== 'assets' && (
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center my-12">
+                  <h3 className="text-lg font-bold text-white mb-2">Módulo: {activeTab.toUpperCase()}</h3>
+                  <p className="text-sm text-slate-400">
+                    O módulo selecionado está configurado e pronto para os próximos passos de desenvolvimento do produto Grana+.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('dashboard')}
+                    className="mt-4 bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs hover:bg-emerald-400 transition-colors cursor-pointer"
+                  >
+                    Voltar para a Visão Geral
+                  </button>
+                </div>
+              )}
+            </main>
+          </div>
+        </div>
+
+        {/* Modal for adding transactions */}
+        <AddTransactionModal />
+
+        {/* Modal for password reset if coming from token link */}
+        <UpdatePasswordModal
+          isOpen={isResetPasswordOpen}
+          onClose={() => setIsResetPasswordOpen(false)}
+        />
+      </div>
+    </FinancialProvider>
+  );
+}
+
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+// pt-BR
+import ptCommon from './locales/pt-BR/common.json';
+import ptSidebar from './locales/pt-BR/sidebar.json';
+import ptHeader from './locales/pt-BR/header.json';
+import ptDashboard from './locales/pt-BR/dashboard.json';
+import ptWallet from './locales/pt-BR/wallet.json';
+import ptTransactions from './locales/pt-BR/transactions.json';
+import ptCards from './locales/pt-BR/cards.json';
+import ptGoals from './locales/pt-BR/goals.json';
+import ptPlanning from './locales/pt-BR/planning.json';
+import ptPatrimonio from './locales/pt-BR/patrimonio.json';
+import ptReports from './locales/pt-BR/reports.json';
+import ptSettings from './locales/pt-BR/settings.json';
+import ptAuth from './locales/pt-BR/auth.json';
+import ptOnboarding from './locales/pt-BR/onboarding.json';
+
+// en-US
+import enCommon from './locales/en-US/common.json';
+import enSidebar from './locales/en-US/sidebar.json';
+import enHeader from './locales/en-US/header.json';
+import enDashboard from './locales/en-US/dashboard.json';
+import enWallet from './locales/en-US/wallet.json';
+import enTransactions from './locales/en-US/transactions.json';
+import enCards from './locales/en-US/cards.json';
+import enGoals from './locales/en-US/goals.json';
+import enPlanning from './locales/en-US/planning.json';
+import enPatrimonio from './locales/en-US/patrimonio.json';
+import enReports from './locales/en-US/reports.json';
+import enSettings from './locales/en-US/settings.json';
+import enAuth from './locales/en-US/auth.json';
+import enOnboarding from './locales/en-US/onboarding.json';
+
+// es-ES
+import esCommon from './locales/es-ES/common.json';
+import esSidebar from './locales/es-ES/sidebar.json';
+import esHeader from './locales/es-ES/header.json';
+import esDashboard from './locales/es-ES/dashboard.json';
+import esWallet from './locales/es-ES/wallet.json';
+import esTransactions from './locales/es-ES/transactions.json';
+import esCards from './locales/es-ES/cards.json';
+import esGoals from './locales/es-ES/goals.json';
+import esPlanning from './locales/es-ES/planning.json';
+import esPatrimonio from './locales/es-ES/patrimonio.json';
+import esReports from './locales/es-ES/reports.json';
+import esSettings from './locales/es-ES/settings.json';
+import esAuth from './locales/es-ES/auth.json';
+import esOnboarding from './locales/es-ES/onboarding.json';
+
+const savedLang = localStorage.getItem('grana_language') || 'pt-BR';
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources: {
+      'pt-BR': {
+        common: ptCommon,
+        sidebar: ptSidebar,
+        header: ptHeader,
+        dashboard: ptDashboard,
+        wallet: ptWallet,
+        transactions: ptTransactions,
+        cards: ptCards,
+        goals: ptGoals,
+        planning: ptPlanning,
+        patrimonio: ptPatrimonio,
+        reports: ptReports,
+        settings: ptSettings,
+        auth: ptAuth,
+        onboarding: ptOnboarding,
+      },
+      'en-US': {
+        common: enCommon,
+        sidebar: enSidebar,
+        header: enHeader,
+        dashboard: enDashboard,
+        wallet: enWallet,
+        transactions: enTransactions,
+        cards: enCards,
+        goals: enGoals,
+        planning: enPlanning,
+        patrimonio: enPatrimonio,
+        reports: enReports,
+        settings: enSettings,
+        auth: enAuth,
+        onboarding: enOnboarding,
+      },
+      'es-ES': {
+        common: esCommon,
+        sidebar: esSidebar,
+        header: esHeader,
+        dashboard: esDashboard,
+        wallet: esWallet,
+        transactions: esTransactions,
+        cards: esCards,
+        goals: esGoals,
+        planning: esPlanning,
+        patrimonio: esPatrimonio,
+        reports: esReports,
+        settings: esSettings,
+        auth: esAuth,
+        onboarding: esOnboarding,
+      },
+    },
+    lng: savedLang,
+    fallbackLng: 'pt-BR',
+    defaultNS: 'common',
+    interpolation: {
+      escapeValue: false, // React handles XSS
+    },
+  });
+
+export default i18n;
+
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F6F8FA;
+    color: #1E293B;
+    transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html.dark body {
+    background-color: #0B0F17 !important;
+    color: #F8FAFC !important;
+  }
+}
+
+/* Global Smooth Color Transition for Theme Switcher */
+html, body, div, header, nav, main, section, aside, button, input, select, textarea {
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Premium Soft Floating Cards - Light Mode */
+.card-fintech {
+  background-color: #ffffff;
+  border-radius: 1.75rem; /* rounded-[28px] */
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03), 0 4px 12px -2px rgba(0, 0, 0, 0.015);
+  border: 1px solid rgba(241, 245, 249, 0.9);
+}
+
+.card-fintech:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.05), 0 6px 16px -2px rgba(0, 0, 0, 0.02);
+}
+
+/* 
+ * ===================================================================
+ *  DARK MODE EXPERIÊNCIA PREMIUM (Inspirado em Linear, Raycast, Vercel)
+ * ===================================================================
+ */
+
+/* 1. Surfaces & Cards (Um nível acima do background #0B0F17) */
+html.dark .card-fintech,
+html.dark .bg-white {
+  background-color: #121826 !important;
+  color: #F8FAFC !important;
+  border-color: rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4), 0 2px 8px -2px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark .card-fintech:hover {
+  box-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* 2. Sidebar com Verde Institucional Escurecido (#071C14) */
+html.dark aside {
+  background-color: #071C14 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark aside .bg-\[\#113E2B\] {
+  background-color: #0B251B !important;
+  border-color: rgba(35, 130, 92, 0.2) !important;
+}
+
+/* 3. Header Separado Visualmente (#0C121E) */
+html.dark header {
+  background-color: rgba(12, 18, 30, 0.85) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* 4. Textos - Branco levemente acinzetado e cinzas elegantes */
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-slate-700 {
+  color: #F8FAFC !important;
+}
+
+html.dark .text-slate-600,
+html.dark .text-slate-500 {
+  color: #CBD5E1 !important;
+}
+
+html.dark .text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+html.dark .text-slate-300 {
+  color: #CBD5E1 !important;
+}
+
+/* 5. Sub-elementos, Chips, Badges & Hovers */
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/60,
+html.dark .bg-slate-50\/50,
+html.dark .bg-slate-100,
+html.dark .bg-slate-100\/80,
+html.dark .bg-slate-100\/50,
+html.dark .bg-[#F6F8FA],
+html.dark .bg-[#F4F6F8] {
+  background-color: #182232 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-100:hover,
+html.dark .hover\:bg-slate-200\/50:hover,
+html.dark .hover\:bg-slate-200\/60:hover {
+  background-color: #1E2A3E !important;
+}
+
+/* 6. Bordas Discretas */
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-200\/70,
+html.dark .border-slate-200\/60,
+html.dark .border-slate-200\/50,
+html.dark .border-slate-200\/40,
+html.dark .border-slate-200\/30,
+html.dark .border-slate-200\/20,
+html.dark .border-slate-300 {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* 7. Inputs, Selects & Modais */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #182232 !important;
+  color: #F8FAFC !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  border-color: rgba(76, 175, 106, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(76, 175, 106, 0.15) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Animations */
+@keyframes gaugePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-gauge {
+  animation: gaugePulse 4s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: cardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+
+
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
+import App from './App.tsx';
+import { ThemeProvider } from './context/ThemeContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { analytics } from './services/analytics';
+import './index.css';
+
+// Initialize analytics points if enabled
+analytics.init();
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <ErrorBoundary>
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+      </I18nextProvider>
+    </ErrorBoundary>
+  </StrictMode>,
+);
+
