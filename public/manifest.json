@@ -1,0 +1,24 @@
+{
+  "short_name": "Grana+",
+  "name": "Grana+ | Copiloto Financeiro Inteligente",
+  "description": "Seu copiloto financeiro para controle de contas, cartões, patrimônio e planejamento de metas.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0B251B",
+  "theme_color": "#1E6B4B",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["finance", "productivity", "utilities"],
+  "lang": "pt-BR"
+}
