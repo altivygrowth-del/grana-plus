@@ -1,0 +1,6 @@
+{
+  "name": "Grana+",
+  "description": "Plataforma SaaS de Gestão Financeira Pessoal e Controle Orçamentário",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
