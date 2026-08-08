@@ -13,11 +13,8 @@ export const DinheiroLivreCard: React.FC<DinheiroLivreCardProps> = ({
 }) => {
   const { t } = useTranslation('dashboard');
   const user = useUserStore((state) => state.user);
-  const accounts = useUserStore((state) => state.accounts);
 
-  const totalBalance = accounts.length > 0
-    ? accounts.reduce((acc, a) => acc + a.balance, 0)
-    : user.currentBalance;
+  const totalBalance = Number(user.currentBalance) || 0;
 
   const now = new Date();
   const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();

@@ -37,16 +37,22 @@ export interface DeleteServiceResult {
 }
 
 export function mapDbToCard(db: DbCard): CreditCardItem {
+  const parseDayStr = (val: any) => {
+    if (val === undefined || val === null) return undefined;
+    if (typeof val === 'number') return `Dia ${String(val).padStart(2, '0')}`;
+    return String(val);
+  };
+
   return {
     id: db.id,
     name: db.name || 'Cartão',
     bank: db.bank || 'Outro',
     brand: db.brand || 'Mastercard',
-    lastFourDigits: db.last_four_digits || db.last_4_digits || db.last_four || '4321',
-    totalLimit: Number(db.total_limit ?? db.limit ?? db.totalLimit ?? 0),
+    lastFourDigits: db.last_four_digits || db.last_4_digits || (db as any).last_digits || db.last_four || undefined,
+    totalLimit: Number(db.total_limit ?? (db as any).card_limit ?? db.limit ?? db.totalLimit ?? 0),
     currentUsage: Number(db.current_usage ?? db.used_limit ?? db.currentUsage ?? 0),
-    closingDate: db.closing_date || db.closing_day || db.closingDate || 'Dia 05',
-    dueDate: db.due_date || db.due_day || db.dueDate || 'Dia 12',
+    closingDate: db.closing_date || parseDayStr(db.closing_day) || db.closingDate || 'Dia 05',
+    dueDate: db.due_date || parseDayStr(db.due_day) || db.dueDate || 'Dia 12',
     color: db.color || '#165037'
   };
 }

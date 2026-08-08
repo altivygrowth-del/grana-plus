@@ -18,9 +18,9 @@ export const CardModal: React.FC<CardModalProps> = ({
   editingCard
 }) => {
   const [name, setName] = useState('');
-  const [bank, setBank] = useState('Nubank');
+  const [bank, setBank] = useState('');
   const [brand, setBrand] = useState('Mastercard');
-  const [lastFourDigits, setLastFourDigits] = useState('4321');
+  const [lastFourDigits, setLastFourDigits] = useState('');
   const [totalLimit, setTotalLimit] = useState('');
   const [closingDate, setClosingDate] = useState('Dia 05');
   const [dueDate, setDueDate] = useState('Dia 12');
@@ -28,17 +28,17 @@ export const CardModal: React.FC<CardModalProps> = ({
   useEffect(() => {
     if (editingCard) {
       setName(editingCard.name || '');
-      setBank(editingCard.bank || 'Nubank');
+      setBank(editingCard.bank || '');
       setBrand(editingCard.brand || 'Mastercard');
-      setLastFourDigits(editingCard.lastFourDigits || '4321');
+      setLastFourDigits(editingCard.lastFourDigits || '');
       setTotalLimit(editingCard.totalLimit ? String(editingCard.totalLimit) : '');
       setClosingDate(editingCard.closingDate || 'Dia 05');
       setDueDate(editingCard.dueDate || 'Dia 12');
     } else {
       setName('');
-      setBank('Nubank');
+      setBank('');
       setBrand('Mastercard');
-      setLastFourDigits('4321');
+      setLastFourDigits('');
       setTotalLimit('');
       setClosingDate('Dia 05');
       setDueDate('Dia 12');
@@ -56,7 +56,7 @@ export const CardModal: React.FC<CardModalProps> = ({
       name: name.trim(),
       bank,
       brand,
-      lastFourDigits: lastFourDigits.slice(-4) || '4321',
+      lastFourDigits: lastFourDigits.slice(-4) || undefined,
       totalLimit: parsedLimit,
       closingDate: closingDate.trim() || 'Dia 05',
       dueDate: dueDate.trim() || 'Dia 12',

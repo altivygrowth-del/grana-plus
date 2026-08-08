@@ -78,7 +78,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
       setNewCardName('');
       setIsAddingCardInput(false);
     } else {
-      setAddedCards(prev => [...prev, 'Nubank']);
+      setIsAddingCardInput(false);
     }
   };
 
@@ -95,8 +95,8 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
     if (step < 6) {
       setStep(prev => prev + 1);
     } else {
-      const incomeNum = parseCurrencyValue(monthlyIncome) || 5000;
-      const balanceNum = parseCurrencyValue(currentBalance) || 8500;
+      const incomeNum = parseCurrencyValue(monthlyIncome);
+      const balanceNum = parseCurrencyValue(currentBalance);
 
       setOnboardingData({
         monthlyIncome: incomeNum,
@@ -245,7 +245,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
                   type="text"
                   value={currentBalance}
                   onChange={handleBalanceChange}
-                  placeholder="Ex.: R$ 8.500,00"
+                  placeholder="Ex.: R$ 2.500,00"
                   className="w-full px-5 py-4 rounded-2xl border border-slate-200 text-slate-900 font-bold text-xl sm:text-2xl focus:border-[#4CAF6A] focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-300 placeholder:font-normal"
                 />
               </div>
@@ -487,11 +487,11 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete }) =>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="bg-white p-2.5 rounded-xl border border-slate-100">
                   <span className="text-slate-400 text-[11px] block">Renda Mês</span>
-                  <span className="font-bold text-slate-900">{monthlyIncome || 'R$ 5.000,00'}</span>
+                  <span className="font-bold text-slate-900">{monthlyIncome || 'R$ 0,00'}</span>
                 </div>
                 <div className="bg-white p-2.5 rounded-xl border border-slate-100">
                   <span className="text-slate-400 text-[11px] block">Saldo Atual</span>
-                  <span className="font-bold text-slate-900">{currentBalance || 'R$ 8.500,00'}</span>
+                  <span className="font-bold text-slate-900">{currentBalance || 'R$ 0,00'}</span>
                 </div>
               </div>
             </div>

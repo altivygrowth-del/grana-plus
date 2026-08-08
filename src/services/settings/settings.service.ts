@@ -1,6 +1,6 @@
 import { supabase } from '../../lib/supabase';
 
-export type ThemePreference = 'light' | 'dark' | 'system';
+export type ThemePreference = 'light';
 
 export interface UserSettingsData {
   user_id?: string;
@@ -27,13 +27,8 @@ export const SettingsService = {
         .maybeSingle();
 
       if (!error && data) {
-        let themeVal = data.theme;
-        if (themeVal === 'claro') themeVal = 'light';
-        if (themeVal === 'escuro') themeVal = 'dark';
-        if (themeVal === 'sistema') themeVal = 'system';
-
         return {
-          theme: themeVal as ThemePreference,
+          theme: 'light',
           language: data.language || data.idioma,
           currency: data.currency || data.moeda,
         };
@@ -47,13 +42,8 @@ export const SettingsService = {
         .maybeSingle();
 
       if (!errorId && dataId) {
-        let themeVal = dataId.theme;
-        if (themeVal === 'claro') themeVal = 'light';
-        if (themeVal === 'escuro') themeVal = 'dark';
-        if (themeVal === 'sistema') themeVal = 'system';
-
         return {
-          theme: themeVal as ThemePreference,
+          theme: 'light',
           language: dataId.language || dataId.idioma,
           currency: dataId.currency || dataId.moeda,
         };
@@ -81,13 +71,8 @@ export const SettingsService = {
         updated_at: new Date().toISOString(),
       };
 
-      if (updates.theme) {
-        let normTheme: ThemePreference = 'system';
-        if (updates.theme === 'escuro' || updates.theme === 'dark') normTheme = 'dark';
-        else if (updates.theme === 'claro' || updates.theme === 'light') normTheme = 'light';
-        else normTheme = 'system';
-        payload.theme = normTheme;
-      }
+      // O Grana+ usa exclusivamente o tema claro.
+      payload.theme = 'light';
 
       if (updates.language) {
         payload.language = updates.language;
@@ -130,8 +115,8 @@ export const SettingsService = {
   /**
    * Atalho para atualizar apenas o tema
    */
-  async updateTheme(userId: string, theme: ThemePreference | 'claro' | 'escuro' | 'sistema'): Promise<boolean> {
-    return this.updateSettings(userId, { theme });
+  async updateTheme(userId: string, _theme?: ThemePreference | 'claro' | 'escuro' | 'sistema'): Promise<boolean> {
+    return this.updateSettings(userId, { theme: 'light' });
   }
 };
 

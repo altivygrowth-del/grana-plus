@@ -153,9 +153,9 @@ export interface UserStoreState {
   deleteGoal: (id: string) => void;
 
   // Cards Actions
-  createCard: (card: Omit<CreditCardItem, 'id' | 'currentUsage'> & { currentUsage?: number }) => void;
-  updateCard: (id: string, card: Partial<CreditCardItem>) => void;
-  deleteCard: (id: string) => void;
+  createCard: (card: Omit<CreditCardItem, 'id' | 'currentUsage'> & { currentUsage?: number }) => Promise<{ data?: CreditCardItem; error?: string }>;
+  updateCard: (id: string, card: Partial<CreditCardItem>) => Promise<{ data?: CreditCardItem; error?: string }>;
+  deleteCard: (id: string) => Promise<{ success?: boolean; error?: string }>;
 
   // Assets Actions
   createAsset: (asset: Omit<AssetItem, 'id'>) => Promise<{ data?: AssetItem; error?: string }>;
@@ -177,7 +177,7 @@ const DEFAULT_USER: UserProfile = {
   financialGoal: 'emergency',
   hasCreditCard: false,
   isOnboarded: false,
-  theme: 'system',
+  theme: 'light',
   language: 'Português',
   currency: 'Real (BRL)',
   dateFormat: 'DD/MM/AAAA',
@@ -314,7 +314,7 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
         set((state) => ({
           user: {
             ...state.user,
-            theme: settings.theme || state.user.theme,
+            theme: 'light',
             language: settings.language || state.user.language,
             currency: settings.currency || state.user.currency,
           }
@@ -354,8 +354,17 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
   setMonthlyIncome: (monthlyIncome) => 
     set((state) => ({ user: { ...state.user, monthlyIncome } })),
     
-  setCurrentBalance: (currentBalance) => 
-    set((state) => ({ user: { ...state.user, currentBalance } })),
+  setCurrentBalance: (currentBalance) => {
+    set((state) => ({ user: { ...state.user, currentBalance } }));
+    const authUser = get().authUser;
+    if (authUser) {
+      ProfileService.updateProfile(authUser.id, { current_balance: currentBalance });
+      const accounts = get().accounts;
+      if (accounts.length > 0) {
+        accountsService.updateAccount(accounts[0].id, { balance: currentBalance });
+      }
+    }
+  },
     
   setFinancialGoal: (financialGoal) => 
     set((state) => ({ user: { ...state.user, financialGoal } })),
@@ -372,16 +381,11 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
       set({ accountsError: error, isLoadingAccounts: false });
     } else {
       const accountsList = data || [];
-      const totalAccountsBalance = accountsList.reduce((sum, a) => sum + a.balance, 0);
-      set((state) => ({
+      set({
         accounts: accountsList,
         isLoadingAccounts: false,
-        accountsError: null,
-        user: {
-          ...state.user,
-          currentBalance: accountsList.length > 0 ? totalAccountsBalance : state.user.currentBalance
-        }
-      }));
+        accountsError: null
+      });
     }
   },
 
@@ -397,6 +401,10 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
     set((state) => {
       const updatedAccounts = [newAcc, ...state.accounts];
       const newTotal = updatedAccounts.reduce((sum, a) => sum + a.balance, 0);
+      const authUser = state.authUser;
+      if (authUser) {
+        ProfileService.updateProfile(authUser.id, { current_balance: newTotal });
+      }
       return {
         accounts: updatedAccounts,
         user: { ...state.user, currentBalance: newTotal }
@@ -414,6 +422,10 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
       set((state) => {
         const updated = state.accounts.map((a) => (a.id === tempId ? data : a));
         const newTotal = updated.reduce((sum, a) => sum + a.balance, 0);
+        const authUser = state.authUser;
+        if (authUser) {
+          ProfileService.updateProfile(authUser.id, { current_balance: newTotal });
+        }
         return {
           accounts: updated,
           user: { ...state.user, currentBalance: newTotal }
@@ -429,6 +441,10 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
         a.id === id ? { ...a, ...updates, lastUpdated: 'Hoje' } : a
       );
       const newTotal = updatedAccounts.reduce((sum, a) => sum + a.balance, 0);
+      const authUser = state.authUser;
+      if (authUser) {
+        ProfileService.updateProfile(authUser.id, { current_balance: newTotal });
+      }
       return {
         accounts: updatedAccounts,
         user: { ...state.user, currentBalance: newTotal }
@@ -443,6 +459,10 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
       set((state) => {
         const updated = state.accounts.map((a) => (a.id === id ? data : a));
         const newTotal = updated.reduce((sum, a) => sum + a.balance, 0);
+        const authUser = state.authUser;
+        if (authUser) {
+          ProfileService.updateProfile(authUser.id, { current_balance: newTotal });
+        }
         return {
           accounts: updated,
           user: { ...state.user, currentBalance: newTotal }
@@ -458,6 +478,10 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
       previousAccounts = state.accounts;
       const updatedAccounts = state.accounts.filter((a) => a.id !== id);
       const newTotal = updatedAccounts.reduce((sum, a) => sum + a.balance, 0);
+      const authUser = state.authUser;
+      if (authUser) {
+        ProfileService.updateProfile(authUser.id, { current_balance: newTotal });
+      }
       return {
         accounts: updatedAccounts,
         user: { ...state.user, currentBalance: newTotal }
@@ -555,19 +579,38 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
           if (error) console.error('Erro ao salvar onboarding no Supabase:', error.message);
         });
 
+      // Synchronize primary account with currentBalance
+      accountsService.getAccounts().then(({ data: existingAccs }) => {
+        if (!existingAccs || existingAccs.length === 0) {
+          accountsService.createAccount({
+            name: 'Conta Principal',
+            type: 'Conta Corrente',
+            balance: currentBalance,
+            color: '#1E6B4B',
+            bgColor: 'bg-emerald-50 text-[#1E6B4B] border-emerald-100',
+            lastUpdated: 'Hoje'
+          }).then(() => {
+            get().fetchAccounts();
+          });
+        } else {
+          accountsService.updateAccount(existingAccs[0].id, { balance: currentBalance }).then(() => {
+            get().fetchAccounts();
+          });
+        }
+      });
+
       // Persist onboarding cards if any
-      if (hasCreditCard) {
-        const namesToCreate = cardNames.length > 0 ? cardNames : ['Nubank'];
-        namesToCreate.forEach((cName) => {
+      if (hasCreditCard && cardNames.length > 0) {
+        cardNames.forEach((cName) => {
           cardsService.createCard({
             name: cName,
             bank: cName,
-            brand: 'Mastercard',
-            lastFourDigits: '4321',
-            totalLimit: Math.round(monthlyIncome * 0.8) || 5000,
+            brand: undefined,
+            lastFourDigits: undefined,
+            totalLimit: 0,
             currentUsage: 0,
-            closingDate: 'Dia 05',
-            dueDate: 'Dia 12',
+            closingDate: undefined,
+            dueDate: undefined,
             color: '#165037'
           }).then(() => {
             get().fetchCards();
@@ -582,21 +625,11 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
         ? cardNames.map((cName, idx) => ({
             id: `card-${idx + 1}`,
             name: cName,
-            currentUsage: Math.round(monthlyIncome * 0.25),
-            totalLimit: Math.round(monthlyIncome * 0.8),
-            dueDate: '12/08'
+            currentUsage: 0,
+            totalLimit: 0,
+            dueDate: ''
           }))
-        : hasCreditCard
-          ? [
-              {
-                id: 'card-1',
-                name: 'Nubank',
-                currentUsage: Math.round(monthlyIncome * 0.25),
-                totalLimit: Math.round(monthlyIncome * 0.8),
-                dueDate: '12/08'
-              }
-            ]
-          : [];
+        : [];
 
       // Account logic: If balance is specified, ensure there's a primary account "Conta Principal" if no accounts or custom balance
       const newAccounts: Account[] = [
@@ -703,6 +736,12 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
     }
 
     // Persist updated account balance to Supabase
+    const authUser = get().authUser;
+    const currentUser = get().user;
+    if (authUser) {
+      ProfileService.updateProfile(authUser.id, { current_balance: currentUser.currentBalance });
+    }
+
     if (txData.accountId) {
       const targetAcc = get().accounts.find((a) => a.id === txData.accountId);
       if (targetAcc && !targetAcc.id.startsWith('acc-')) {
@@ -954,7 +993,7 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
       currentUsage: cardData.currentUsage || 0,
       bank: cardData.bank || 'Outro',
       brand: cardData.brand || 'Mastercard',
-      lastFourDigits: cardData.lastFourDigits || '4321',
+      lastFourDigits: cardData.lastFourDigits,
       closingDate: cardData.closingDate || 'Dia 05',
       dueDate: cardData.dueDate || 'Dia 12',
       color: cardData.color || '#165037'
@@ -1092,6 +1131,13 @@ export const useUserStore = create<UserStoreState>((set, get) => ({
 
       if (Object.keys(dbUpdates).length > 0) {
         ProfileService.updateProfile(authUser.id, dbUpdates);
+      }
+
+      if (profileData.currentBalance !== undefined) {
+        const accounts = get().accounts;
+        if (accounts.length > 0) {
+          accountsService.updateAccount(accounts[0].id, { balance: profileData.currentBalance });
+        }
       }
 
       if (profileData.theme !== undefined || profileData.language !== undefined || profileData.currency !== undefined) {

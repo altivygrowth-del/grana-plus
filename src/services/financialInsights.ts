@@ -34,6 +34,22 @@ export function generateFinancialInsights(storeState: UserStoreState): Financial
     ? accounts.reduce((sum, acc) => sum + acc.balance, 0)
     : user.currentBalance;
 
+  // 0. Check if user has any financial data at all
+  const hasData = transactions.length > 0 || goals.length > 0 || cards.length > 0 || accounts.length > 0 || totalBalance > 0;
+
+  if (!hasData) {
+    return [{
+      id: 'empty-insight',
+      titulo: 'Nenhum dado cadastrado',
+      descricao: 'Cadastre suas contas, movimentações e metas para que a IA gere análises e recomendações em tempo real.',
+      tipo: 'informacao',
+      prioridade: 'baixa',
+      icone: 'Sparkles',
+      acaoSugerida: 'Comece adicionando uma conta ou lançamento no botão + no topo da tela.',
+      dataCriacao: 'Hoje'
+    }];
+  }
+
   const totalIncome = transactions
     .filter((t) => t.type === 'income')
     .reduce((sum, t) => sum + t.amount, 0);
@@ -208,13 +224,13 @@ export function generateFinancialInsights(storeState: UserStoreState): Financial
 export function getHighestPriorityInsight(storeState: UserStoreState): FinancialInsight {
   const insights = generateFinancialInsights(storeState);
   return insights[0] || {
-    id: 'default-insight',
-    titulo: 'Bom trabalho com suas finanças! 👏',
-    descricao: 'Acompanhe regularmente suas receitas e despesas para manter o controle total do seu orçamento.',
+    id: 'empty-insight',
+    titulo: 'Nenhum dado cadastrado',
+    descricao: 'Cadastre suas contas, movimentações e metas para que a IA gere análises e recomendações em tempo real.',
     tipo: 'informacao',
-    prioridade: 'media',
+    prioridade: 'baixa',
     icone: 'Sparkles',
-    acaoSugerida: 'Cadastre suas movimentações diariamente no Grana+.',
+    acaoSugerida: 'Comece adicionando uma conta ou lançamento no botão + no topo da tela.',
     dataCriacao: 'Hoje'
   };
 }

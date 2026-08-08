@@ -19,11 +19,17 @@ import {
 
 export const CartoesView: React.FC = () => {
   const { t } = useTranslation('cards');
+  const user = useUserStore((state) => state.user);
   const cards = useUserStore((state) => state.cards);
   const isLoadingCards = useUserStore((state) => state.isLoadingCards);
+  const fetchCards = useUserStore((state) => state.fetchCards);
   const createCard = useUserStore((state) => state.createCard);
   const updateCard = useUserStore((state) => state.updateCard);
   const deleteCard = useUserStore((state) => state.deleteCard);
+
+  React.useEffect(() => {
+    fetchCards();
+  }, [fetchCards]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
@@ -64,10 +70,29 @@ export const CartoesView: React.FC = () => {
     } else {
       await createCard(cardData);
     }
+    await fetchCards();
   };
 
-  const handleDeleteCard = async (id: string) => {
-    await deleteCard(id);
+  const handleDeleteCard = async (cardOrId: CreditCardItem | string) => {
+    const cardId = typeof cardOrId === 'string' ? cardOrId : cardOrId?.id;
+    const card = typeof cardOrId === 'string' ? cards.find((c) => c.id === cardOrId) : cardOrId;
+
+    console.log("=== EXCLUSÃO DE CARTÃO ===");
+    console.log("card recebido:", card || cardOrId);
+    console.log("card.id:", cardId);
+    console.log("user:", user);
+
+    if (!cardId) {
+      console.error("ID de cartão inválido para exclusão:", cardOrId);
+      return;
+    }
+
+    console.log("Chamando deleteCard com ID:", cardId);
+    const res = await deleteCard(cardId);
+    if (res && res.error) {
+      console.error("Erro ao excluir cartão:", res.error);
+    }
+    await fetchCards();
   };
 
   // Sort cards automatically
@@ -269,7 +294,7 @@ export const CartoesView: React.FC = () => {
                           {brandInfo.label}
                         </span>
                         <span className="text-[11px] font-mono text-slate-400">
-                          •••• {card.lastFourDigits || '4321'}
+                          •••• {card.lastFourDigits || '----'}
                         </span>
                       </div>
                     </div>
@@ -363,7 +388,7 @@ export const CartoesView: React.FC = () => {
                       <button
                         onClick={() => {
                           if (confirm(`Deseja remover o cartão "${card.name}"?`)) {
-                            handleDeleteCard(card.id);
+                            handleDeleteCard(card);
                           }
                         }}
                         className="flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold text-rose-500 hover:text-rose-700 hover:bg-rose-50 transition-colors cursor-pointer"

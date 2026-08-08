@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS public.assets (
 CREATE TABLE IF NOT EXISTS public.settings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID UNIQUE NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-    theme TEXT NOT NULL DEFAULT 'dark',
+    theme TEXT NOT NULL DEFAULT 'light',
     notifications_enabled BOOLEAN NOT NULL DEFAULT true,
     email_alerts BOOLEAN NOT NULL DEFAULT true,
     weekly_report BOOLEAN NOT NULL DEFAULT true,

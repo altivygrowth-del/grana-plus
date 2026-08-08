@@ -99,7 +99,7 @@ export default function App() {
   // 3. Authenticated & Onboarded -> Show Main Financial App
   return (
     <FinancialProvider>
-      <div className="min-h-screen bg-[#F6F8FA] dark:bg-[#0B1320] text-slate-800 dark:text-slate-100 font-sans selection:bg-[#4CAF6A] selection:text-white antialiased transition-colors duration-300">
+      <div className="min-h-screen bg-[#F6F8FA] text-slate-800 font-sans selection:bg-[#4CAF6A] selection:text-white antialiased">
         <div className="flex">
           {/* Sidebar */}
           <Sidebar

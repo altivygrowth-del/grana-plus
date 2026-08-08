@@ -2,13 +2,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { useUserStore } from '../store/userStore';
-import { useTheme } from '../context/ThemeContext';
 import { 
   User, 
   Settings, 
-  Moon, 
-  Sun, 
-  Monitor, 
   Globe, 
   DollarSign, 
   Calendar, 
@@ -33,7 +29,6 @@ export const ConfiguracoesView: React.FC = () => {
   const { t } = useTranslation('settings');
   const user = useUserStore((state) => state.user);
   const updateProfile = useUserStore((state) => state.updateProfile);
-  const { theme, setTheme } = useTheme();
   const transactions = useUserStore((state) => state.transactions);
   const accounts = useUserStore((state) => state.accounts);
   const goals = useUserStore((state) => state.goals);
@@ -64,13 +59,6 @@ export const ConfiguracoesView: React.FC = () => {
     });
     setIsEditProfileOpen(false);
     showToast('Perfil atualizado com sucesso!');
-  };
-
-  // Preference changes
-  const handleThemeChange = (newTheme: 'light' | 'dark' | 'system' | 'claro' | 'escuro' | 'sistema') => {
-    setTheme(newTheme);
-    const label = (newTheme === 'dark' || newTheme === 'escuro') ? 'ESCURO' : (newTheme === 'light' || newTheme === 'claro') ? 'CLARO' : 'SISTEMA';
-    showToast(`Tema alterado para: ${label}`);
   };
 
   const handleLanguageChange = (newLang: string) => {
@@ -192,7 +180,7 @@ export const ConfiguracoesView: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-slate-500 font-medium">
-              {user.email || 'alexandre.silva@grana.com.br'}
+              {user.email || 'E-mail não informado'}
             </p>
             <p className="text-[11px] text-slate-400">
               Membro do Grana+ desde 2026
@@ -203,7 +191,7 @@ export const ConfiguracoesView: React.FC = () => {
         <button
           onClick={() => {
             setEditName(user.name);
-            setEditEmail(user.email || 'alexandre.silva@grana.com.br');
+            setEditEmail(user.email || '');
             setIsEditProfileOpen(true);
           }}
           className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200 transition-all cursor-pointer w-full sm:w-auto shrink-0"
@@ -228,53 +216,6 @@ export const ConfiguracoesView: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {/* Tema */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-2">
-                Tema de Exibição
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleThemeChange('light')}
-                  className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
-                    theme === 'light'
-                      ? 'bg-[#1E6B4B] text-white border-[#1E6B4B] shadow-xs'
-                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  <Sun className="w-3.5 h-3.5" />
-                  <span>Claro</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleThemeChange('dark')}
-                  className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
-                    theme === 'dark'
-                      ? 'bg-[#1E6B4B] text-white border-[#1E6B4B] shadow-xs'
-                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  <Moon className="w-3.5 h-3.5" />
-                  <span>Escuro</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleThemeChange('system')}
-                  className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
-                    theme === 'system'
-                      ? 'bg-[#1E6B4B] text-white border-[#1E6B4B] shadow-xs'
-                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  <Monitor className="w-3.5 h-3.5" />
-                  <span>Sistema</span>
-                </button>
-              </div>
-            </div>
-
             {/* Idioma */}
             <div className="flex items-center justify-between py-2 border-t border-slate-100">
               <div className="flex items-center gap-2.5">
@@ -287,7 +228,7 @@ export const ConfiguracoesView: React.FC = () => {
               <select
                 value={i18n.language || user.language || 'pt-BR'}
                 onChange={(e) => handleLanguageChange(e.target.value)}
-                className="text-xs font-bold text-[#1E6B4B] bg-emerald-50 dark:bg-[#0B251B] px-3 py-1.5 rounded-xl border border-emerald-100/60 dark:border-emerald-800/50 outline-none cursor-pointer"
+                className="text-xs font-bold text-[#1E6B4B] bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100/60 outline-none cursor-pointer"
               >
                 <option value="pt-BR">Português (pt-BR)</option>
                 <option value="en-US">English (en-US)</option>
@@ -307,7 +248,7 @@ export const ConfiguracoesView: React.FC = () => {
               <select
                 value={localStorage.getItem('grana_currency') || user.currency || 'BRL'}
                 onChange={(e) => handleCurrencyChange(e.target.value)}
-                className="text-xs font-bold text-[#1E6B4B] bg-emerald-50 dark:bg-[#0B251B] px-3 py-1.5 rounded-xl border border-emerald-100/60 dark:border-emerald-800/50 outline-none cursor-pointer"
+                className="text-xs font-bold text-[#1E6B4B] bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100/60 outline-none cursor-pointer"
               >
                 <option value="BRL">Real (BRL - R$)</option>
                 <option value="USD">Dollar (USD - $)</option>

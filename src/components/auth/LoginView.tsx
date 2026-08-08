@@ -157,18 +157,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
         </div>
       </form>
 
-      {/* Switch to Register */}
-      <div className="mt-8 text-center pt-6 border-t border-slate-200/80">
-        <p className="text-xs sm:text-sm text-slate-600">
-          Ainda não tem uma conta no Grana+?{' '}
-          <button
-            onClick={onNavigateRegister}
-            className="font-bold text-[#1E6B4B] hover:text-[#165037] underline underline-offset-4 transition-colors duration-200 cursor-pointer"
-          >
-            Cadastre-se gratuitamente
-          </button>
-        </p>
-      </div>
+
     </div>
   );
 };

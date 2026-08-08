@@ -58,12 +58,12 @@ export const ensureProfileExists = async (
   name: string,
   email: string
 ): Promise<UserProfileData | null> => {
-  const mockAuthUser = {
+  const tempAuthUser = {
     id: userId,
     email: email,
     user_metadata: { full_name: name }
   } as any;
-  return await ProfileService.ensureProfile(userId, mockAuthUser);
+  return await ProfileService.ensureProfile(userId, tempAuthUser);
 };
 
 /**

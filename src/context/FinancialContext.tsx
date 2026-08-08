@@ -93,7 +93,7 @@ export const FinancialProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       'Outros': 'bg-slate-500'
     };
 
-    const categoryKeys = Array.from(new Set([...Object.keys(defaultLimits), ...Object.keys(spentMap)]));
+    const categoryKeys = Object.keys(spentMap);
 
     return categoryKeys.map((cat) => ({
       category: cat as TransactionCategory,
@@ -123,9 +123,9 @@ export const FinancialProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
     });
 
-    const totalBalance = accounts.length > 0
-      ? accounts.reduce((sum, a) => sum + a.balance, 0)
-      : user.currentBalance;
+    // The profile's current_balance is the authoritative dashboard balance.
+    // Accounts are managed independently and should not overwrite this value on fetch.
+    const totalBalance = Number(user.currentBalance) || 0;
 
     return {
       totalBalance,

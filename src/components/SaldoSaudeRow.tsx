@@ -6,15 +6,18 @@ import { ShieldCheck } from 'lucide-react';
 interface SaldoSaudeRowProps {
   totalBalance?: number;
   healthScore?: number;
+  hasData?: boolean;
 }
 
 export const SaldoSaudeRow: React.FC<SaldoSaudeRowProps> = ({ 
   totalBalance = 0,
-  healthScore = 0
+  healthScore = 0,
+  hasData = true
 }) => {
   const { t } = useTranslation('dashboard');
 
   const getHealthLabel = (score: number) => {
+    if (!hasData) return 'Nenhum dado cadastrado';
     if (score >= 80) return t('healthExcellent', 'Excelente! Continue assim.');
     if (score >= 60) return t('healthGood', 'Boa! Suas finanças estão no caminho certo.');
     if (score >= 40) return t('healthAttention', 'Atenção! Revise algumas despesas.');
@@ -38,7 +41,9 @@ export const SaldoSaudeRow: React.FC<SaldoSaudeRowProps> = ({
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#4CAF6A]" />
             </span>
-            <span className="opacity-80">{t('updatedNow', 'Atualizado agora')}</span>
+            <span className="opacity-80">
+              {hasData ? t('updatedNow', 'Atualizado agora') : 'Nenhuma conta cadastrada'}
+            </span>
           </div>
         </div>
       </div>
@@ -52,7 +57,7 @@ export const SaldoSaudeRow: React.FC<SaldoSaudeRowProps> = ({
         <div>
           <div className="flex items-baseline gap-1">
             <span className="text-3xl sm:text-3.5xl font-black text-slate-900 tracking-tight">
-              {healthScore}
+              {hasData ? healthScore : '--'}
             </span>
             <span className="text-sm font-semibold text-slate-400">
               /100
@@ -63,7 +68,7 @@ export const SaldoSaudeRow: React.FC<SaldoSaudeRowProps> = ({
           <div className="w-full bg-slate-100 rounded-full h-1.5 my-3.5 overflow-hidden">
             <div 
               className="bg-[#4CAF6A] h-full rounded-full transition-all duration-700 ease-out"
-              style={{ width: `${Math.min(100, Math.max(0, healthScore))}%` }}
+              style={{ width: `${hasData ? Math.min(100, Math.max(0, healthScore)) : 0}%` }}
             />
           </div>
 
